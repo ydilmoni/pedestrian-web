@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חיזוי נפח הולכי רגל</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>חיזוי נפח הולכי רגל</h1>
+            <p>הזן שם עיר וקבל תחזית לנפח הולכי רגל ברחובות</p>
+        </header>
+
+        <div class="search-container">
+            <form id="searchForm" class="search-form">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="cityInput" 
+                        placeholder="הזן שם עיר (לדוגמה: Monaco, Tel Aviv, Jerusalem)"
+                        required
+                        dir="ltr"
+                    >
+                    <button type="submit" id="searchBtn">
+                        <span id="buttonText">חיפוש</span>
+                        <span id="loadingSpinner" class="spinner hidden">⏳</span>
+                    </button>
+                    <button type="button" id="downloadBtn" disabled>הורדת GeoJSON</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="statusMessage" class="status-message hidden"></div>
+
+        <div class="results-container">
+            <div id="mapContainer" class="map-container">
+                <div class="map-header">
+                    <h3 id="mapTitle">מפת רחובות</h3>
+                    <div id="loadingMessage" class="loading-message hidden">טוען נתונים...</div>
+                    <div id="mapStats" class="map-stats"></div>
+                </div>
+                <div id="map" class="map"></div>
+                <div class="legend">
+                    <h4>מקרא:</h4>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #28c20aff"></span>
+                        <span>נפח נמוך (1)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #35bdb4ff"></span>
+                        <span>נפח בינוני-נמוך (2)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #3628b5ff"></span>
+                        <span>נפח בינוני (3)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #e53bd1ff"></span>
+                        <span>נפח גבוה (4)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #b00808ff"></span>
+                        <span>נפח גבוה מאוד (5)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="detailsContainer" class="details-container hidden">
+                <h3>פרטי תחזית</h3>
+                <div id="predictionDetails" class="prediction-details"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
