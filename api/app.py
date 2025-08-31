@@ -126,20 +126,17 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 app = Flask(__name__)
 
-ALLOWED_ORIGINS = [
-    "http://localhost:5173", "http://127.0.0.1:5173",  # Vite dev
-    "http://localhost:3000", "http://127.0.0.1:3000",  # CRA dev
-    "http://localhost:3001", "http://127.0.0.1:3001",  # Experience Builder dev
-    "http://localhost:8080", "http://127.0.0.1:8080",  # Alternative port
-    "https://experience.arcgis.com",                     # published Experience origin
-    "https://ariel-surveying.maps.arcgis.com",           # org portal (useful for previews/embeds)
-    "https://pedestrian-api.onrender.com",               # current API hosting
-    "https://<your-site>.netlify.app"                   # alt hosting
-]
+# CORS: read from env var (comma-separated)
+ALLOWED_ORIGINS = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
+CORS(app, resources={r"/*": {"origins": [o.strip() for o in ALLOWED_ORIGINS if o.strip()]}})
+
+# Where to write temporary/export files (Render persistent disk)
+DATA_DIR = os.environ.get("DATA_DIR", "/var/data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
 CORS(app, resources={
     r"/*": {
-        "origins": ALLOWED_ORIGINS,
+        "origins": [o.strip() for o in ALLOWED_ORIGINS if o.strip()],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
@@ -1111,7 +1108,7 @@ def predict_gpkg():
             return jsonify({"error": "No features/geometry to export"}), 400
 
         # Windows-safe temp file
-        fd, tmp_path = tempfile.mkstemp(suffix=".gpkg")
+        fd, tmp_path = tempfile.mkstemp(suffix=".gpkg", dir=DATA_DIR)
         os.close(fd)
 
         try:
@@ -1212,7 +1209,7 @@ def predict_batch_gpkg():
         
         # Create temporary GPKG file
         import os
-        tmp_fd, tmp_path = tempfile.mkstemp(suffix='.gpkg')
+        tmp_fd, tmp_path = tempfile.mkstemp(suffix='.gpkg', dir=DATA_DIR)
         
         try:
             # Close the file descriptor to allow geopandas to write
