@@ -93,6 +93,19 @@
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
             crossorigin=""></script>
     
+    <!-- API base resolver: use localStorage override, ?api= param, or default to Render URL -->
+    <script>
+    (function(){
+      const url = new URL(window.location.href);
+      const fromQuery = url.searchParams.get('api');
+      if (fromQuery) localStorage.setItem('API_BASE', fromQuery);
+
+      window.API_BASE =
+        localStorage.getItem('API_BASE') ||
+        "https://pedestrian-api.onrender.com"; /* TODO: after first deploy, replace with your actual API URL from Render */
+    })();
+    </script>
+    
     <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
