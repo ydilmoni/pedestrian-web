@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(\\Users\\Noam Teshuva\\Desktop\\PycharmProjects\\Pedestrain_Volume_app/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
