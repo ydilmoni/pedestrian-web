@@ -114,6 +114,32 @@ The application is designed as a standalone system with:
 - Native fetch API for HTTP requests
 - CSS Grid and Flexbox for layout
 
+## Deploy on Render
+
+This repo contains a `render.yaml` blueprint for:
+- **Web service**: Flask API (`/api`) via Gunicorn
+- **Static site**: frontend (`/frontend`)
+- **Persistent Disk**: `/var/data` for generated GPKGs/caches
+- **Git LFS**: models pulled at build time
+
+### Steps
+1. Push to GitHub.
+2. On Render → **New** → **Blueprint** → select this repo → **Apply**.
+3. Wait for the API and static site to deploy.
+4. Copy the API URL (e.g., `https://pedestrian-api.onrender.com`) and open the frontend site.
+5. (Optional) Set a permanent base:
+   - Open the frontend, add `?api=<YOUR_API_URL>` once, e.g.:  
+     `https://pedestrian-frontend.onrender.com/?api=https://pedestrian-api.onrender.com`  
+     The app saves this in `localStorage` for next visits.
+
+### Environment variables
+- `CORS_ORIGINS` (comma-separated): set to your static site + localhost.
+- `DATA_DIR`: default `/var/data` (disk mount).
+
+### Notes
+- Models (`api/models/*.cbm`) are tracked via Git LFS and pulled on build.
+- GPKGs are created in `/var/data` and streamed back to the client.
+
 ## License
 
 This project is part of pedestrian volume prediction research.
