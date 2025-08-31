@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: pedestrian-api
+    env: python
+    rootDir: api
+    plan: starter
+    autoDeploy: true
+    buildCommand: |
+      apt-get update && apt-get install -y git-lfs || true
+      git lfs install || true
+      git lfs pull || true
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app -b 0.0.0.0:$PORT --timeout 180
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 20
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: DATA_DIR
+        value: /var/data
+      - key: CORS_ORIGINS
+        value: https://pedestrian-frontend.onrender.com,http://localhost:3000
+
+  - type: static
+    name: pedestrian-frontend
+    rootDir: frontend
+    buildCommand: ""
+    publishPath: .
